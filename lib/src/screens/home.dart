@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "dart:math";
 
 import '../widgets/cart.dart';
 
@@ -16,10 +17,10 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     catController = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: Duration(milliseconds: 200),
       vsync: this,
     );
-    catAnimation = Tween<double>(begin: 0, end: 100).animate(
+    catAnimation = Tween<double>(begin: -35, end: -82).animate(
       CurvedAnimation(
         parent: catController,
         curve: Curves.easeIn,
@@ -44,22 +45,53 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
         title: Text("Animation"),
       ),
       body: GestureDetector(
-        child: buildAnimation(),
+        child: Center(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              buildCatAnimation(),
+              buildBox(),
+              buildLeftFlap(),
+            ],
+          ),
+        ),
         onTap: onTap,
       ),
     );
   }
 
-  Widget buildAnimation() {
+  Widget buildCatAnimation() {
     return AnimatedBuilder(
       animation: catAnimation,
       builder: (context, child) {
-        return Container(
-          child: child,
-          margin: EdgeInsets.only(top: catAnimation.value),
+        return Positioned(
+          child: child!,
+          top: catAnimation.value,
+          left: 0,
+          right: 0,
         );
       },
       child: Cat(),
+    );
+  }
+
+  Widget buildBox() {
+    return Container(
+      height: 200,
+      width: 200,
+      color: Colors.brown,
+    );
+  }
+
+  Widget buildLeftFlap() {
+    return Transform.rotate(
+      angle: pi * 3 / 4,
+      alignment: Alignment.topLeft,
+      child: Container(
+        height: 10,
+        width: 110,
+        color: Colors.red,
+      ),
     );
   }
 }
